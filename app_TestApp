@@ -1,0 +1,17 @@
+//
+//  app_TesteApp.swift
+//  app-Teste
+//
+//  Created by iredefbmac_29 on 21/01/25.
+//
+
+import SwiftUI
+
+@main
+struct app_TesteApp: App {
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+        }
+    }
+}
