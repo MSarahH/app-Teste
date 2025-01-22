@@ -1,0 +1,108 @@
+//
+//  ContentView.swift
+//  app-Teste
+//
+//  Created by iredefbmac_29 on 21/01/25.
+//
+import SwiftUI
+
+struct ContentView: View {
+    @State private var isLocationEnabled: Bool = false
+    @State private var cep: String = ""
+    
+    let emergencyServices = [
+        "Polícia: 190",
+        "SAMU: 192",
+        "Bombeiros: 193",
+        "Assistência Social: 123"
+    ]
+    
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 20) {
+                // Título
+                Text("Alô Direto")
+                    .font(.largeTitle)
+                    .bold()
+                    .padding(.top)
+                
+                Text("Sistema de Contatos de Emergência")
+                    .font(.headline)
+                    .foregroundColor(.gray)
+                
+                // Seletor de localização
+                Toggle(isOn: $isLocationEnabled) {
+                    Text("Manter localização ligada")
+                }
+                .padding()
+                
+                // Campo para CEP (se localização estiver desligada)
+                if !isLocationEnabled {
+                    TextField("Insira o CEP", text: $cep)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding(.horizontal)
+                }
+                
+                // Lista de serviços de emergência
+                Text("Selecione um serviço de emergência:")
+                    .font(.headline)
+                
+                List(emergencyServices, id: \.self) { service in
+                    NavigationLink(destination: ServiceDetailView(service: service)) {
+                        Text(service.components(separatedBy: ":").first ?? service)
+                    }
+                }
+                .listStyle(PlainListStyle())
+                
+                Spacer()
+            }
+            .navigationTitle("")
+        }
+    }
+}
+
+struct ServiceDetailView: View {
+    let service: String
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            Text("Número de Emergência")
+                .font(.headline)
+                .foregroundColor(.gray)
+            
+            // Exibe o número em destaque
+            Text(service)
+                .font(.largeTitle)
+                .bold()
+                .multilineTextAlignment(.center)
+                .padding()
+            
+            // Botão para copiar o número de telefone
+            Button(action: {
+                let number = service.components(separatedBy: ":").last?.trimmingCharacters(in: .whitespacesAndNewlines)
+                UIPasteboard.general.string = number
+                print("Número copiado: \(number ?? "Número inválido")")
+            }) {
+                Text("Copiar número de telefone")
+                    .font(.headline)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+            }
+            
+            Spacer()
+        }
+        .padding()
+        .navigationTitle("Detalhes")
+        .navigationBarTitleDisplayMode(.inline) // Seta de "voltar" padrão
+    }
+}
+
+// Preview para testes no editor do Xcode
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
+}
